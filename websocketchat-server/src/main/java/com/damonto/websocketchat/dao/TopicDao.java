@@ -1,12 +1,13 @@
 package com.damonto.websocketchat.dao;
 
-import com.damonto.websocketchat.model.User;
+import com.damonto.websocketchat.model.Topic;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserDao extends CrudRepository<User, Long>{
+public interface TopicDao extends CrudRepository<Topic, Long> {
 
-    User findByUsername(String username);
+    Topic findByName(String name);
+
 
 }

@@ -3,24 +3,33 @@ package com.damonto.websocketchat.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
-@Entity
+@Entity(name = "User")
+@Table(name = "user")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column
+    @Column(unique = true)
+    @Size(max = 20)
     private String username;
 
     @Column
     @JsonIgnore
     private String password;
 
-    @Column
-    private HashSet<String> topics;
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "user_topic",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "topic_id")
+    )
+    private List<Topic> topics = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -46,19 +55,26 @@ public class User {
         this.password = password;
     }
 
-    public HashSet<String> getTopics() {
+    public List<Topic> getTopics() {
         return topics;
     }
 
-    public void setTopics(HashSet topics) {
+    public void setTopics(List<Topic> topics) {
         this.topics = topics;
     }
 
-    public void addTopic(String topic) {
+    public void addTopic(Topic topic) {
         this.topics.add(topic);
+        topic.getSubscribers().add(this);
     }
 
-    public void deleteTopic(String topic) {
+    public void removeTopic(Topic topic) {
         this.topics.remove(topic);
+        topic.getSubscribers().remove(this);
+    }
+
+    @Override
+    public String toString() {
+        return "User:" + this.username + ", id:" + this.id;
     }
 }

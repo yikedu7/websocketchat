@@ -19,9 +19,9 @@ public class ResourcesServerConfig extends ResourceServerConfigurerAdapter{
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
-                .anonymous().disable()
+                .anonymous().disable()          // 禁止匿名
                 .authorizeRequests()
-                .antMatchers("/users/**").access("hasRole('ADMIN')")
+                .antMatchers("/users/**").access("hasRole('ADMIN')")    // 设定使用 /users api 需要认证
                 .and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
     }
 }
